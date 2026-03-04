@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SendyQUIZ - SendyHost</title>
+    <!-- Orbitron font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Hamburger Icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Orbitron', sans-serif;
+            background: radial-gradient(circle at 30% 20%, #120c28, #040111);
+            min-height: 100vh;
+            color: #ede4ff;
+            padding: 16px 16px 90px;
+            font-size: 14px;
+            letter-spacing: 0.3px;
+        }
+
+        /* tema ungu (#8765e0), biru (#2a7c9e), hitam (#0d0a1a) */
+        .login-wrapper {
+            max-width: 480px;
+            margin: 2rem auto;
+        }
+
+        .glass-card {
+            background: rgba(7, 3, 22, 0.88);
+            backdrop-filter: blur(14px);
+            border: 2px solid #8765e0;
+            border-radius: 48px;
+            padding: 2.2rem 2rem;
+            box-shadow: 0 30px 45px #221649;
+        }
+
+        /* logo kecil di atas login */
+        .logo-container {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        .logo-img {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #8765e0;
+            box-shadow: 0 0 20px #6246b0;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #3b2d68;
+        }
+
+        .tab {
+            flex: 1;
+            background: none;
+            border: none;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            color: #c9b6ff;
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: 0.2s;
+            text-transform: uppercase;
+        }
+
+        .tab.active {
+            color: white;
+            border-bottom: 3px solid #2a7c9e;
+            text-shadow: 0 0 6px #3c8ec0;
+        }
+
+        .input-field {
+            margin-bottom: 1.8rem;
+        }
+
+        .input-field label {
+            display: block;
+            margin-bottom: 6px;
+            color: #cab9ff;
+            font-weight: 500;
+            font-size: 0.8rem;
+        }
+
+        .input-field input {
+            width: 100%;
+            background: #1b1538;
+            border: 2px solid #5e48aa;
+            border-radius: 50px;
+            padding: 14px 22px;
+            font-family: 'Orbitron', sans-serif;
+            color: white;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .input-field input:focus {
+            border-color: #2a7c9e;
+            box-shadow: 0 0 15px #235e80;
+        }
+
+        .btn {
+            background: linear-gradient(145deg, #8765e0, #5d41b0);
+            border: none;
+            border-radius: 50px;
+            padding: 15px 25px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            color: white;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.2s;
+            border: 1px solid #ae92ff;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .btn:hover {
+            background: #9a7cf2;
+            box-shadow: 0 6px 22px #5b38c2;
+        }
+
+        /* DASHBOARD */
+        .dashboard {
+            display: none;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* hamburger menu - top right (dipindah ke kanan) */
+        .hamburger-menu {
+            position: fixed;
+            top: 20px;
+            right: 20px;  /* pindah ke kanan */
+            z-index: 1000;
+            cursor: pointer;
+            background: #0c0929ee;
+            backdrop-filter: blur(16px);
+            border: 2px solid #8765e0;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px #000;
+        }
+        .hamburger-menu i {
+            font-size: 1.8rem;
+            color: #d6c5ff;
+        }
+        /* sidebar menu (tetap kiri) */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 280px;
+            height: 100vh;
+            background: #0c0929ee;
+            backdrop-filter: blur(20px);
+            border-right: 2px solid #8765e0;
+            padding: 80px 20px 20px;
+            transition: 0.3s;
+            z-index: 999;
+            overflow-y: auto;
+        }
+        .sidebar.open {
+            left: 0;
+        }
+        .sidebar-item {
+            margin-bottom: 30px;
+            cursor: pointer;
+            background: #1b1542;
+            border-radius: 30px;
+            padding: 15px;
+            border: 1px solid #8765e0;
+        }
+        .sidebar-item h3 {
+            color: white;
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+        .sidebar-item p, .sidebar-item li {
+            color: #cab9ff;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+        .sidebar-item ul {
+            list-style: none;
+            padding-left: 5px;
+        }
+        .sidebar-item li {
+            margin-bottom: 5px;
+        }
+        .thanks-logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #8765e0;
+            margin-bottom: 10px;
+        }
+        .close-sidebar {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 2rem;
+            color: #d6c5ff;
+            cursor: pointer;
+        }
+
+        .profile-header {
+            background: rgba(8, 4, 26, 0.7);
+            backdrop-filter: blur(12px);
+            border: 2px solid #8765e0;
+            border-radius: 80px;
+            padding: 6px 18px 6px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 28px #02000c;
+        }
+
+        .profile-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .avatar {
+            width: 58px;
+            height: 58px;
+            background: linear-gradient(135deg, #8765e0, #2a7c9e);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            border: 2.5px solid white;
+            object-fit: cover;
+        }
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .info h2 {
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .info p {
+            color: #cab9ff;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .poin-role {
+            background: #18133b;
+            padding: 8px 20px;
+            border-radius: 50px;
+            border-right: 5px solid #2a7c9e;
+            display: flex;
+            gap: 18px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        /* BOTTOM NAVIGATION */
+        .bottom-nav {
+            position: fixed;
+            bottom: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #0c0929ee;
+            backdrop-filter: blur(16px);
+            border: 2px solid #8765e0;
+            border-radius: 60px;
+            padding: 8px 16px;
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            justify-content: center;
+            box-shadow: 0 16px 32px #03000e;
+            z-index: 100;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: none;
+            font-family: 'Orbitron', sans-serif;
+            color: #d6c5ff;
+            font-weight: 600;
+            font-size: 0.8rem;
+            padding: 8px 18px;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: 0.2s;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .nav-btn:hover {
+            background: #352e5c;
+            color: white;
+        }
+
+        .nav-btn.active-nav {
+            background: #553cb0;
+            color: white;
+            box-shadow: 0 0 12px #9e83f0;
+        }
+
+        /* konten panel */
+        .panel {
+            background: #0d0a25e0;
+            border: 2px solid #8765e0;
+            border-radius: 48px;
+            padding: 24px;
+            backdrop-filter: blur(6px);
+            margin-bottom: 24px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* soal */
+        .soal-container {
+            background: #171241;
+            border-radius: 44px;
+            padding: 24px;
+            border-left: 10px solid #8765e0;
+        }
+
+        .soal-text {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .jawaban-area {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .jawaban-area input {
+            flex: 3;
+            min-width: 220px;
+            background: #221d48;
+            border: 2px solid #705bc2;
+            border-radius: 50px;
+            padding: 14px 24px;
+            font-family: 'Orbitron', sans-serif;
+            color: white;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .jawaban-area input:focus {
+            border-color: #2a7c9e;
+        }
+
+        .jawaban-area button {
+            flex: 1;
+            background: linear-gradient(145deg, #2a7c9e, #175571);
+            border: none;
+            border-radius: 50px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            color: white;
+            padding: 0 18px;
+            cursor: pointer;
+            border: 1px solid #58add6;
+            transition: 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .jawaban-area button:hover {
+            background: #358cb3;
+            box-shadow: 0 0 18px #2580aa;
+        }
+
+        /* hasil akhir (ukuran kecil) */
+        .hasil-container {
+            text-align: center;
+            background: #191348;
+            border-radius: 48px;
+            padding: 28px 20px;
+            border: 2px solid #8765e0;
+        }
+
+        .hasil-container h2 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+        }
+
+        .hasil-angka {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 12px 0;
+        }
+
+        .hasil-detail {
+            font-size: 0.9rem;
+            color: #c7b4ff;
+        }
+
+        .history-item, .incoming-item {
+            background: #1b1542;
+            border-radius: 38px;
+            padding: 14px 20px;
+            margin-bottom: 12px;
+            border-left: 10px solid;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+
+        .history-item.benar, .incoming-item.benar { border-left-color: #2ebd7a; background: #153529; }
+        .history-item.salah, .incoming-item.salah { border-left-color: #d6436b; }
+
+        .badge {
+            background: #2b2357;
+            padding: 4px 16px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+        }
+
+        .owner-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .clear-btn {
+            background: #d6436b;
+            border: none;
+            border-radius: 40px;
+            padding: 8px 16px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            font-size: 0.7rem;
+            color: white;
+            cursor: pointer;
+            border: 1px solid #ff8a8a;
+            text-transform: uppercase;
+        }
+        .clear-btn:hover {
+            background: #b02b4f;
+        }
+
+        .owner-double {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 24px 0;
+        }
+
+        .big-link {
+            background: #15113b;
+            border: 2px solid #8765e0;
+            border-radius: 60px;
+            padding: 16px 36px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: white;
+            text-decoration: none;
+            transition: 0.2s;
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+        }
+
+        .big-link:hover {
+            background: #5d45b5;
+            border-color: #2a7c9e;
+        }
+
+        .popup {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            background: #1f174a;
+            border: 2px solid #b392ff;
+            border-radius: 28px;
+            padding: 18px 24px;
+            box-shadow: 0 0 40px #562db3;
+            z-index: 200;
+            animation: slide 0.3s;
+            max-width: 340px;
+            font-size: 0.9rem;
+        }
+
+        @keyframes slide {
+            from { transform: translateX(120%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .popup-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            float: right;
+            cursor: pointer;
+        }
+
+        .upload-avatar {
+            background: #211d4b;
+            border-radius: 36px;
+            padding: 12px;
+            margin: 12px 0;
+            border: 2px dashed #8765e0;
+        }
+
+        small, .text-small {
+            font-size: 0.7rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- HAMBURGER MENU (top right) - dipindah ke kanan -->
+    <div class="hamburger-menu" id="hamburgerBtn">
+        <i class="fas fa-bars"></i>
+    </div>
+
+    <!-- SIDEBAR MENU -->
+    <div class="sidebar" id="sidebar">
+        <div class="close-sidebar" id="closeSidebar"><i class="fas fa-times"></i></div>
+        
+        <!-- Informasi -->
+        <div class="sidebar-item" id="infoItem">
+            <h3>📌 INFORMASI</h3>
+            <div style="text-align: center;">
+                <img src="https://files.catbox.moe/w0dzhg.jpg" alt="SendyHost" class="thanks-logo">
+            </div>
+            <p style="font-size:1.2rem; font-weight:700; text-align:center;">SendyQUIZ</p>
+            <p style="font-size:0.85rem;">SendyQUIZ berfungsi untuk kuis atau soal giveaway, Belajar TIK, dan sebagainya. giveaway seperti kuis yang owner minta, dan dipastikan sekali jawab saja.</p>
+        </div>
+
+        <!-- Thanks To -->
+        <div class="sidebar-item" id="thanksItem">
+            <h3>🙏 THANKS TO</h3>
+            <p style="font-weight:600;">Terimakasih kepada Teman-Teman, Orang Tua, dan Yang Maha Kuasa Allah SWT. Dengan Rahmat dan Izin nya, Saya Dapat Menyelesaikan Projek-Projek yang Lumayan Bagus..</p>
+            <ul>
+                <li>• SendyHost</li>
+                <li>• ALIF OFFICIAL</li>
+                <li>• CS Host</li>
+                <li>• LuxzyHost</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- LOGIN PAGE -->
+    <div id="loginPage" class="login-wrapper">
+        <div class="glass-card">
+            <!-- LOGO kecil di atas tabs -->
+            <div class="logo-container">
+                <img src="https://files.catbox.moe/w0dzhg.jpg" alt="SendyHost" class="logo-img">
+            </div>
+
+            <div class="tabs">
+                <button class="tab active" id="tabLogin">Login</button>
+                <button class="tab" id="tabRegister">Daftar</button>
+            </div>
+            <div id="loginForm">
+                <h2 style="font-size:1.8rem; margin-bottom:1.5rem; background:linear-gradient(135deg,#d4bfff,#59b2da); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">LOGIN</h2>
+                <div class="input-field"><label>Username</label><input type="text" id="loginUsername"></div>
+                <div class="input-field"><label>Password</label><input type="password" id="loginPassword"></div>
+                <button class="btn" id="loginBtn">Masuk</button>
+            </div>
+            <div id="registerForm" style="display:none;">
+                <h2 style="font-size:1.8rem; margin-bottom:1.5rem; background:linear-gradient(135deg,#d4bfff,#59b2da); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">DAFTAR</h2>
+                <div class="input-field"><label>Username</label><input type="text" id="regUser"></div>
+                <div class="input-field"><label>Password</label><input type="password" id="regPass"></div>
+                <button class="btn" id="registerBtn">Buat Akun</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DASHBOARD UTAMA -->
+    <div id="dashboard" class="dashboard">
+        <!-- header profil -->
+        <div class="profile-header">
+            <div class="profile-left">
+                <div class="avatar" id="avatarContainer">
+                    <span id="avatarText">U</span>
+                    <img id="avatarImage" class="avatar-img" src="" style="display:none;">
+                </div>
+                <div class="info">
+                    <h2 id="headerUsername">username</h2>
+                    <p id="headerRole">Role: User</p>
+                </div>
+            </div>
+            <div class="poin-role">
+                <span>⭐ POIN: <span id="headerPoin">0</span></span>
+                <span id="headerRoleBadge">USER</span>
+            </div>
+        </div>
+
+        <!-- BOTTOM NAVIGATION (4 menu) -->
+        <div class="bottom-nav">
+            <button class="nav-btn active-nav" data-panel="dashboardPanel">DASHBOARD</button>
+            <button class="nav-btn" data-panel="historyPanel">HISTORY</button>
+            <button class="nav-btn" data-panel="ownerPanel">OWNER</button>
+            <button class="nav-btn" data-panel="profilePanel">PROFILE</button>
+        </div>
+
+        <!-- PANEL DASHBOARD (soal atau hasil) -->
+        <div id="dashboardPanel" class="panel">
+            <div id="soalWrapper">
+                <!-- akan diisi javascript -->
+            </div>
+        </div>
+
+        <!-- PANEL HISTORY -->
+        <div id="historyPanel" class="panel hidden">
+            <h2 style="margin-bottom:18px; font-size:1.2rem;">📜 RIWAYAT</h2>
+            <div id="historyList"></div>
+        </div>
+
+        <!-- PANEL OWNER (link) -->
+        <div id="ownerPanel" class="panel hidden">
+            <h2 style="margin-bottom:18px; font-size:1.2rem;">🔗 OWNER & CHANNEL</h2>
+            <div class="owner-double">
+                <a href="https://t.me/sendyhosting" target="_blank" class="big-link">OWNER</a>
+                <a href="https://t.me/sendyofc" target="_blank" class="big-link">CHANNEL</a>
+            </div>
+        </div>
+
+        <!-- PANEL PROFILE (dengan upload foto) -->
+        <div id="profilePanel" class="panel hidden">
+            <h2 style="margin-bottom:16px; font-size:1.2rem;">⚙️ PROFILE</h2>
+            <div style="background:#171244; border-radius:40px; padding:20px;">
+                <div style="display:flex; gap:15px; align-items:center; flex-wrap:wrap;">
+                    <div class="avatar" style="width:70px; height:70px; font-size:2rem;" id="profileAvatarContainer">
+                        <span id="profileAvatarText">U</span>
+                        <img id="profileAvatarImage" class="avatar-img" src="" style="display:none;">
+                    </div>
+                    <div><p><strong>Username:</strong> <span id="profileUsername"></span></p>
+                    <p><strong>Role:</strong> <span id="profileRole"></span></p>
+                    <p><strong>Poin:</strong> <span id="profilePoin">0</span></p></div>
+                </div>
+
+                <div style="margin:20px 0 12px;">
+                    <label>Ubah Username</label>
+                    <input type="text" id="newUsernameInput" style="background:#262052; border-radius:50px; padding:12px 16px; width:100%; border:2px solid #8765e0; color:white; font-family:'Orbitron'; font-size:0.85rem;">
+                </div>
+
+                <div class="upload-avatar">
+                    <label>📸 Upload Foto Profil</label>
+                    <input type="file" id="uploadFotoInput" accept="image/*" style="margin:10px 0; color:white; font-size:0.8rem;">
+                    <button class="btn" id="simpanFotoBtn" style="padding:10px;">Simpan Foto</button>
+                </div>
+
+                <button class="btn" id="simpanUsernameBtn" style="margin-top:12px;">Simpan Username</button>
+                <button class="btn" id="logoutBtn" style="margin-top:20px; background:#4f3e8a;">LOGOUT</button>
+            </div>
+        </div>
+
+        <!-- owner answer panel (khusus owner) dengan tombol clear -->
+        <div id="ownerAnswerPanel" class="panel hidden" style="margin-top:16px;">
+            <div class="owner-header">
+                <h2 style="font-size:1.2rem;">📬 JAWABAN MASUK</h2>
+                <button class="clear-btn" id="clearJawabanBtn">BERSIHKAN</button>
+            </div>
+            <div id="incomingList"></div>
+        </div>
+    </div>
+
+    <div id="popupArea"></div>
+
+    <script>
+        (function() {
+            // DATA
+            let users = JSON.parse(localStorage.getItem('orbit_small_users')) || [];
+            let jawabanMasuk = JSON.parse(localStorage.getItem('jawabanMasuk_small')) || [];
+
+            // Bank soal + kunci (bisa ditambah owner)
+            const bankSoal = [
+                { soal: "Apa kepanjangan dari HTML?", kunci: "HyperText Markup Language" },
+                { soal: "Apa Aplikasi pencarian default perangkat?", kunci: "Google" },
+                { soal: "CSS adalah singkatan dari?", kunci: "Cascading Style Sheets" },
+                { soal: "Sebutkan Alat Untuk Menggerakan Kursor!", kunci: "Mouse" },
+                { soal: "Alat Untuk Mengetik?", kunci: "Keyboard" },
+                { soal: "Berkas apa yang Untuk Membuat Website?", kunci: "HTML" },
+                { soal: "Siapakah penemu bahasa pemrograman JavaScript?", kunci: "Brendan Eich" },
+                { soal: "Perintah yang digunakan untuk Menggandakan Teks adalah..", kunci: "Copy" },
+                 { soal: "Aplikasi Pengolah kata di Komputer Adalah..", kunci: "Microsoft Word" },
+                 { soal: "Apa singkatan dari AI?", kunci: "Artificial Intelligence" }
+            ];
+
+            // BOT TELEGRAM
+            const BOT_TOKEN = "8401471630:AAFFes0xPxsP0Xq7U_vKBqH0ZTZIjvL68Zk";
+            const OWNER_ID = "7546117130";
+
+            let currentUser = JSON.parse(sessionStorage.getItem('orbit_small_current')) || null;
+
+            // DOM
+            const loginPage = document.getElementById('loginPage');
+            const dashboard = document.getElementById('dashboard');
+            const tabLogin = document.getElementById('tabLogin');
+            const tabRegister = document.getElementById('tabRegister');
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const loginBtn = document.getElementById('loginBtn');
+            const registerBtn = document.getElementById('registerBtn');
+            const navBtns = document.querySelectorAll('.nav-btn');
+            const panels = {
+                dashboard: document.getElementById('dashboardPanel'),
+                history: document.getElementById('historyPanel'),
+                owner: document.getElementById('ownerPanel'),
+                profile: document.getElementById('profilePanel')
+            };
+            const ownerAnswerPanel = document.getElementById('ownerAnswerPanel');
+            const soalWrapper = document.getElementById('soalWrapper');
+            const historyListDiv = document.getElementById('historyList');
+            const incomingListDiv = document.getElementById('incomingList');
+            const avatarContainer = document.getElementById('avatarContainer');
+            const avatarText = document.getElementById('avatarText');
+            const avatarImage = document.getElementById('avatarImage');
+            const headerUsername = document.getElementById('headerUsername');
+            const headerRole = document.getElementById('headerRole');
+            const headerPoin = document.getElementById('headerPoin');
+            const headerRoleBadge = document.getElementById('headerRoleBadge');
+            const profileAvatarContainer = document.getElementById('profileAvatarContainer');
+            const profileAvatarText = document.getElementById('profileAvatarText');
+            const profileAvatarImage = document.getElementById('profileAvatarImage');
+            const profileUsername = document.getElementById('profileUsername');
+            const profileRole = document.getElementById('profileRole');
+            const profilePoin = document.getElementById('profilePoin');
+            const newUsernameInput = document.getElementById('newUsernameInput');
+            const uploadFotoInput = document.getElementById('uploadFotoInput');
+            const simpanFotoBtn = document.getElementById('simpanFotoBtn');
+            const simpanUsernameBtn = document.getElementById('simpanUsernameBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const clearJawabanBtn = document.getElementById('clearJawabanBtn');
+
+            // Hamburger elements
+            const hamburgerBtn = document.getElementById('hamburgerBtn');
+            const sidebar = document.getElementById('sidebar');
+            const closeSidebar = document.getElementById('closeSidebar');
+
+            hamburgerBtn.addEventListener('click', () => {
+                sidebar.classList.add('open');
+            });
+            closeSidebar.addEventListener('click', () => {
+                sidebar.classList.remove('open');
+            });
+            // click outside to close (optional)
+            window.addEventListener('click', (e) => {
+                if (!sidebar.contains(e.target) && !hamburgerBtn.contains(e.target) && sidebar.classList.contains('open')) {
+                    sidebar.classList.remove('open');
+                }
+            });
+
+            // Auto login jika sudah ada session
+            if (currentUser) {
+                const exists = users.find(u => u.username === currentUser.username);
+                if (exists) { currentUser = exists; setCurrentUser(exists); showDashboard(); } 
+                else sessionStorage.removeItem('orbit_small_current');
+            }
+
+            function saveUsers() { localStorage.setItem('orbit_small_users', JSON.stringify(users)); }
+            function saveJawabanMasuk() { localStorage.setItem('jawabanMasuk_small', JSON.stringify(jawabanMasuk)); }
+            function setCurrentUser(u) { currentUser = u; sessionStorage.setItem('orbit_small_current', JSON.stringify(u)); }
+
+            // Inisialisasi state kuis
+            function initKuisState() {
+                if (!currentUser.kuisState) {
+                    currentUser.kuisState = {
+                        indexSoal: 0,
+                        jumlahBenar: 0,
+                        jumlahSalah: 0,
+                        selesai: false
+                    };
+                }
+            }
+
+            // Tampilkan soal atau hasil
+            function renderDashboardContent() {
+                if (!currentUser) return;
+                initKuisState();
+                if (currentUser.kuisState.selesai) {
+                    let benar = currentUser.kuisState.jumlahBenar;
+                    let salah = currentUser.kuisState.jumlahSalah;
+                    soalWrapper.innerHTML = `
+                        <div class="hasil-container">
+                            <h2>🏁 KUIS SELESAI</h2>
+                            <div class="hasil-angka" style="color:#8bc34a;">✅ BENAR: ${benar}</div>
+                            <div class="hasil-angka" style="color:#ff8a8a;">❌ SALAH: ${salah}</div>
+                            <div class="hasil-detail">Skor: ${benar*10} poin</div>
+                            <button class="btn" id="resetKuisBtn" style="margin-top:20px; width:auto; padding:12px 30px;">Main Lagi</button>
+                        </div>
+                    `;
+                    document.getElementById('resetKuisBtn')?.addEventListener('click', resetKuis);
+                } else {
+                    let soal = bankSoal[currentUser.kuisState.indexSoal].soal;
+                    soalWrapper.innerHTML = `
+                        <div class="soal-container">
+                            <div class="soal-text">${soal}</div>
+                            <div class="jawaban-area">
+                                <input type="text" id="jawabanInput" placeholder="Ketik jawaban...">
+                                <button id="kirimJawabanBtn">KIRIM</button>
+                            </div>
+                            <p style="margin-top:15px; font-size:0.8rem;">Soal ke-${currentUser.kuisState.indexSoal+1} dari ${bankSoal.length}</p>
+                        </div>
+                    `;
+                    document.getElementById('kirimJawabanBtn')?.addEventListener('click', prosesJawaban);
+                    document.getElementById('jawabanInput')?.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') prosesJawaban();
+                    });
+                }
+            }
+
+            function resetKuis() {
+                currentUser.kuisState = { indexSoal:0, jumlahBenar:0, jumlahSalah:0, selesai:false };
+                const idx = users.findIndex(u => u.username === currentUser.username);
+                if (idx !== -1) users[idx] = currentUser;
+                saveUsers(); setCurrentUser(currentUser);
+                renderDashboardContent(); refreshUI();
+            }
+
+            async function prosesJawaban() {
+                if (!currentUser) return;
+                initKuisState();
+                if (currentUser.kuisState.selesai) return;
+
+                const jawaban = document.getElementById('jawabanInput')?.value.trim();
+                if (!jawaban) return alert('Isi jawaban.');
+
+                const soalIndex = currentUser.kuisState.indexSoal;
+                const soalSekarang = bankSoal[soalIndex];
+                const isBenar = jawaban.toLowerCase().trim() === soalSekarang.kunci.toLowerCase().trim();
+                const status = isBenar ? 'BENAR' : 'SALAH';
+                const poin = isBenar ? 10 : 0;
+                const timestamp = new Date().toLocaleString('id-ID');
+
+                if (!currentUser.history) currentUser.history = [];
+                currentUser.history.push({ soal: soalSekarang.soal, jawaban, status, timestamp, poin });
+                if (isBenar) {
+                    currentUser.skor = (currentUser.skor || 0) + 10;
+                    currentUser.kuisState.jumlahBenar++;
+                } else {
+                    currentUser.kuisState.jumlahSalah++;
+                }
+
+                // maju soal (baik benar/salah)
+                if (soalIndex + 1 >= bankSoal.length) {
+                    currentUser.kuisState.selesai = true;
+                } else {
+                    currentUser.kuisState.indexSoal++;
+                }
+
+                const idx = users.findIndex(u => u.username === currentUser.username);
+                if (idx !== -1) users[idx] = currentUser;
+                saveUsers(); setCurrentUser(currentUser);
+
+                jawabanMasuk.push({ username: currentUser.username, soal: soalSekarang.soal, jawaban, status, timestamp, poin });
+                saveJawabanMasuk();
+
+                // Popup
+                if (isBenar) {
+                    showPopup(`JAWABAN ANDA BENAR!\n+10 POIN`);
+                    if (currentUser.role !== 'owner') {
+                        showPopup(`BENAR!\nUSER: ${currentUser.username}\nMENDAPATKAN 10 POIN`);
+                    }
+                } else {
+                    showPopup(`JAWABAN ANDA SALAH.`);
+                }
+
+                // Telegram
+                const telegramPesan = `[JAWABAN MASUK]\n${isBenar ? '✅ BENAR!' : '❌ SALAH!'}\nSOAL: ${soalSekarang.soal}\nJAWABAN: ${jawaban}\nUSER: ${currentUser.username}`;
+                kirimTelegram(telegramPesan);
+
+                if (currentUser.role === 'owner') renderIncoming();
+                renderDashboardContent();
+                renderHistory();
+                refreshUI();
+            }
+
+            function kirimTelegram(pesan) {
+                const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+                fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ chat_id: OWNER_ID, text: pesan, parse_mode:'HTML' }) }).catch(e=>console.warn);
+            }
+
+            function showPopup(msg) {
+                const area = document.getElementById('popupArea');
+                const pop = document.createElement('div'); pop.className='popup';
+                pop.innerHTML = `<button class="popup-close" onclick="this.parentElement.remove()">&times;</button><pre style="white-space:pre-wrap">${msg}</pre>`;
+                area.appendChild(pop); setTimeout(() => pop.remove(), 4500);
+            }
+
+            function renderHistory() {
+                if (!currentUser?.history?.length) { historyListDiv.innerHTML = '<p>Belum ada riwayat.</p>'; return; }
+                let html = '';
+                currentUser.history.slice().reverse().forEach(h => {
+                    const cls = h.status === 'BENAR' ? 'benar' : 'salah';
+                    html += `<div class="history-item ${cls}"><div><strong>${h.soal}</strong><br>Jawab: ${h.jawaban} — ${h.status}</div><div class="badge">${h.poin} poin</div></div>`;
+                });
+                historyListDiv.innerHTML = html;
+            }
+
+            function renderIncoming() {
+                if (!jawabanMasuk.length) { incomingListDiv.innerHTML = '<p>Belum ada jawaban masuk.</p>'; return; }
+                let html = '';
+                jawabanMasuk.slice().reverse().forEach(j => {
+                    const cls = j.status === 'BENAR' ? 'benar' : 'salah';
+                    html += `<div class="incoming-item ${cls}"><div><strong>${j.username}</strong> — ${j.soal}<br>✎ "${j.jawaban}" — ${j.status} ${j.poin ? '(+10)' : ''}</div><div>${j.timestamp}</div></div>`;
+                });
+                incomingListDiv.innerHTML = html;
+            }
+
+            function updateAvatarDisplay() {
+                if (!currentUser) return;
+                const showImage = currentUser.avatarDataURL && currentUser.avatarDataURL !== '';
+                [avatarText, profileAvatarText].forEach(el => el.style.display = showImage ? 'none' : 'inline');
+                [avatarImage, profileAvatarImage].forEach(el => {
+                    el.style.display = showImage ? 'block' : 'none';
+                    if (showImage) el.src = currentUser.avatarDataURL;
+                });
+                if (!showImage) {
+                    const init = currentUser.avatarInit || currentUser.username.charAt(0).toUpperCase();
+                    avatarText.innerText = init;
+                    profileAvatarText.innerText = init;
+                }
+            }
+
+            function refreshUI() {
+                if (!currentUser) return;
+                headerUsername.innerText = currentUser.username;
+                const roleTxt = currentUser.role === 'owner' ? 'Owner' : 'User';
+                headerRole.innerText = `Role: ${roleTxt}`;
+                headerPoin.innerText = currentUser.skor || 0;
+                headerRoleBadge.innerText = roleTxt.toUpperCase();
+                profileUsername.innerText = currentUser.username;
+                profileRole.innerText = roleTxt;
+                profilePoin.innerText = currentUser.skor || 0;
+                updateAvatarDisplay();
+            }
+
+            // Login / register
+            tabLogin.onclick = () => {
+                tabLogin.classList.add('active'); tabRegister.classList.remove('active');
+                loginForm.style.display='block'; registerForm.style.display='none';
+            };
+            tabRegister.onclick = () => {
+                tabRegister.classList.add('active'); tabLogin.classList.remove('active');
+                registerForm.style.display='block'; loginForm.style.display='none';
+            };
+
+            registerBtn.onclick = () => {
+                const user = document.getElementById('regUser').value.trim();
+                const pass = document.getElementById('regPass').value.trim();
+                if (!user || pass.length<4) return alert('Min 4 karakter');
+                if (users.find(u => u.username === user)) return alert('Username dipakai');
+                const newUser = { username: user, password: pass, role: 'user', history: [], skor: 0, avatarInit: user.charAt(0).toUpperCase(), avatarDataURL: '', kuisState: { indexSoal:0, jumlahBenar:0, jumlahSalah:0, selesai:false } };
+                users.push(newUser); saveUsers(); setCurrentUser(newUser); showDashboard();
+            };
+
+            loginBtn.onclick = () => {
+                const user = document.getElementById('loginUsername').value.trim();
+                const pass = document.getElementById('loginPassword').value.trim();
+                if (user === 'SENDY' && pass === 'SENDY10') {
+                    let owner = users.find(u => u.username === 'SENDY' && u.role === 'owner');
+                    if (!owner) { owner = { username:'SENDY', password:'SENDY10', role:'owner', history:[], skor:0, avatarInit:'S', avatarDataURL:'', kuisState:{ indexSoal:0, jumlahBenar:0, jumlahSalah:0, selesai:false } }; users.push(owner); saveUsers(); }
+                    setCurrentUser(owner); showDashboard(); return;
+                }
+                const found = users.find(u => u.username === user && u.password === pass && u.role !== 'owner');
+                if (found) { setCurrentUser(found); showDashboard(); } else alert('Salah username/password');
+            };
+
+            function showDashboard() {
+                loginPage.style.display = 'none';
+                dashboard.style.display = 'block';
+                refreshUI(); renderDashboardContent(); renderHistory();
+                if (currentUser.role === 'owner') {
+                    ownerAnswerPanel.classList.remove('hidden');
+                    renderIncoming();
+                } else ownerAnswerPanel.classList.add('hidden');
+                showPanel('dashboardPanel');
+            }
+
+            function showPanel(panelId) {
+                Object.values(panels).forEach(p => p.classList.add('hidden'));
+                document.getElementById(panelId).classList.remove('hidden');
+                navBtns.forEach(btn => {
+                    btn.classList.remove('active-nav');
+                    if (btn.dataset.panel === panelId) btn.classList.add('active-nav');
+                });
+                if (panelId === 'historyPanel') renderHistory();
+                if (panelId === 'profilePanel') refreshUI();
+                if (panelId === 'dashboardPanel') renderDashboardContent();
+            }
+            navBtns.forEach(btn => btn.addEventListener('click', () => showPanel(btn.dataset.panel)));
+
+            simpanUsernameBtn.addEventListener('click', ()=>{
+                const newName = newUsernameInput.value.trim();
+                if (newName && newName !== currentUser.username) {
+                    if (users.find(u => u.username === newName)) alert('Username sudah dipakai');
+                    else currentUser.username = newName;
+                }
+                const idx = users.findIndex(u => u.username === currentUser.username);
+                if (idx !== -1) users[idx] = currentUser;
+                saveUsers(); setCurrentUser(currentUser); refreshUI();
+                newUsernameInput.value = '';
+                alert('Username diperbarui');
+            });
+
+            simpanFotoBtn.addEventListener('click', function() {
+                const file = uploadFotoInput.files[0];
+                if (!file) return alert('Pilih file gambar.');
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    currentUser.avatarDataURL = e.target.result;
+                    currentUser.avatarInit = '';
+                    const idx = users.findIndex(u => u.username === currentUser.username);
+                    if (idx !== -1) users[idx] = currentUser;
+                    saveUsers(); setCurrentUser(currentUser);
+                    updateAvatarDisplay();
+                    alert('Foto tersimpan!');
+                };
+                reader.readAsDataURL(file);
+            });
+
+            logoutBtn.addEventListener('click', ()=>{
+                sessionStorage.removeItem('orbit_small_current');
+                currentUser = null;
+                dashboard.style.display = 'none';
+                loginPage.style.display = 'block';
+            });
+
+            // Tombol bersihkan jawaban masuk
+            if (clearJawabanBtn) {
+                clearJawabanBtn.addEventListener('click', () => {
+                    jawabanMasuk = [];
+                    saveJawabanMasuk();
+                    renderIncoming();
+                    showPopup('Riwayat jawaban masuk telah dibersihkan!');
+                });
+            }
+
+            if (!users.find(u => u.username === 'SENDY')) {
+                users.push({ username:'SENDY', password:'SENDY10', role:'owner', history:[], skor:0, avatarInit:'S', avatarDataURL:'', kuisState:{ indexSoal:0, jumlahBenar:0, jumlahSalah:0, selesai:false } });
+                saveUsers();
+            }
+        })();
+    </script>
+</body>
+</html>
